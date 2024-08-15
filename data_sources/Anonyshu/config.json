@@ -1,0 +1,10 @@
+{
+    "name": "Anonyshu",
+    "type": "mongodb-atlas",
+    "config": {
+        "clusterName": "Initial",
+        "readPreference": "primary",
+        "wireProtocolEnabled": false
+    },
+    "version": 1
+}

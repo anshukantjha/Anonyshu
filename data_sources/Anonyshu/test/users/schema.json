@@ -1,0 +1,39 @@
+{
+    "title": "user",
+    "type": "object",
+    "required": [
+        "_id"
+    ],
+    "properties": {
+        "__v": {
+            "bsonType": "mixed"
+        },
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "email": {
+            "bsonType": "mixed"
+        },
+        "isAcceptingMessages": {
+            "bsonType": "mixed"
+        },
+        "isVerified": {
+            "bsonType": "mixed"
+        },
+        "messages": {
+            "bsonType": "mixed"
+        },
+        "password": {
+            "bsonType": "mixed"
+        },
+        "username": {
+            "bsonType": "mixed"
+        },
+        "verifyCode": {
+            "bsonType": "mixed"
+        },
+        "verifyCodeExpiry": {
+            "bsonType": "mixed"
+        }
+    }
+}
