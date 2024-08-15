@@ -69,7 +69,7 @@ const SignupPage = () => {
     setIsSubmitting(true);
     try {
       const response = await axios.post<ApiResponse>("/api/sign-up", data);
-      console.log(response);
+      // console.log(response);
       toast({
         title: "Success",
         description: response.data.message,

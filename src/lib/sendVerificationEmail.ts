@@ -27,18 +27,14 @@ async function sendVerificationEmail(
     html: emailHtml,
   };
 
-  let isMailSent: boolean = false;
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log("Error in sending email  " + error);
-      return true;
-    } else {
-      console.log("Email sent: " + info.response);
-      isMailSent = true;
-      return false;
-    }
-  });
-  return isMailSent;
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent: " + info.response);
+    return true;
+  } catch (error) {
+    console.log("Error in sending email: " + error);
+    return false;
+  }
 }
 
 export default sendVerificationEmail;
