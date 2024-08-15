@@ -1,0 +1,6 @@
+{
+    "name": "Anonyshu",
+    "provider_region": "aws-ap-south-1",
+    "deployment_model": "LOCAL",
+    "environment": "production"
+}
