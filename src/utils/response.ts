@@ -1,12 +1,8 @@
-function response(message: string, status: number,data?:any) {
+function response(message: string, status: number, data?: any) {
   return Response.json(
+    { success: status < 400, message: message, data },
     {
-      message,
-      success: status < 400,
-      data
-    },
-    {
-      status,
+      status: status,
     }
   );
 }

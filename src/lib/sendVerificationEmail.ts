@@ -1,4 +1,3 @@
-import ApiResponse from "@/types/ApiResponse";
 import { render } from "@react-email/components";
 import nodemailer from "nodemailer";
 import VerificationEmail from "@/components/emailTemplate";

@@ -13,15 +13,13 @@ import { useToast } from "@/components/ui/use-toast";
 import { signInSchema } from "@/schemas/signInSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { postSignIn } from "../../../utils/userAction";
-import { getSession, useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 
-const signInForm = () => {
-  const router = useRouter();
+const SignInForm = () => {
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -117,4 +115,4 @@ const signInForm = () => {
   );
 };
 
-export default signInForm;
+export default SignInForm;

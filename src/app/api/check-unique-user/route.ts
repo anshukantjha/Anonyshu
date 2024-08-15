@@ -1,15 +1,13 @@
-import dbConnect from "@/lib/dbConnect";
 import { z } from "zod";
 import { usernameValidation } from "@/schemas/signUpSchema";
-import UserModel from "@/model/User";
 import response from "@/utils/response";
+import { findOne } from "@/lib/mongoFunction";
 
 const UsernameQuerySchema = z.object({
-  username:usernameValidation,
+  username: usernameValidation,
 });
 
 export async function GET(request: Request) {
-  await dbConnect();
   //   console.log(request);
   try {
     const { searchParams } = new URL(request.url);
@@ -21,9 +19,11 @@ export async function GET(request: Request) {
     console.log(result);
 
     if (result.success) {
-      const existingVerifiedUser = await UserModel.findOne({
-        username: usernameQuery.username,
-        isVerified: true,
+      const existingVerifiedUser = await findOne({
+        filter: {
+          username: usernameQuery,
+          isVerified: true,
+        },
       });
 
       if (existingVerifiedUser) {

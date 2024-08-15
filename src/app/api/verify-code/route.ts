@@ -1,13 +1,16 @@
-import UserModel from "@/model/User";
-import dbConnect from "@/lib/dbConnect";
+import { findOne, updateUserById } from "@/lib/mongoFunction";
 import response from "@/utils/response";
 
 export async function POST(request: Request) {
-  await dbConnect();
   try {
     const { username, verifyCode } = await request.json();
+    console.log(username)
     // console.log(username,verifyCode)
-    const user = await UserModel.findOne({ username });
+    const user = await findOne({
+      filter: {
+        username,
+      },
+    });
 
     if (!user) {
       return response("User not found", 404);
@@ -20,8 +23,8 @@ export async function POST(request: Request) {
     // console.log(isCodeNotExpired)
     if (isCodeValid && isCodeNotExpired) {
       // Update the user's verification status
-      user.isVerified = true;
-      await user.save();
+
+      await updateUserById(user._id, { $set: { isVerified: true } });
 
       return response("Account Verified Successfully", 201);
     } else if (!isCodeNotExpired) {
@@ -32,7 +35,7 @@ export async function POST(request: Request) {
       );
     } else {
       // Code is incorrect
-      return response("Incorrect Verification Code", 401);
+      return response("Incorrect Verification Code", 401, false);
     }
   } catch (error) {
     console.log("Error Verifying Code");

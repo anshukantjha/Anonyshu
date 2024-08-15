@@ -1,17 +1,18 @@
-import UserModel from "@/model/User";
-import dbConnect from "@/lib/dbConnect";
-import { Message } from "@/model/User";
+import { findOne, Message, updateUserById } from "@/lib/mongoFunction";
 import response from "@/utils/response";
+import { ObjectId } from "mongodb";
 
-
-// sending message to user 
+// sending message to user
 export async function POST(request: Request) {
-  await dbConnect();
   // const {content,identifierHint} =
   const { content, username } = await request.json();
   try {
-    const user = await UserModel.findOne({ username });
-    console.log( `user inside sendmessage route`,user)
+    const user = await findOne({
+      filter: {
+        username: username,
+      },
+    });
+    console.log(`user inside sendmessage route`, user);
     if (!user) {
       return response("User not found", 404);
     }
@@ -20,10 +21,8 @@ export async function POST(request: Request) {
     if (!user.isAcceptingMessages) {
       return response("User not accepting message", 403);
     }
-
-    const newMessage = { content, createdAt: new Date() };
-    user.messages.push(newMessage as Message);
-    await user.save();
+    const newMessage = { _id: new ObjectId(), content, createdAt: new Date() };
+    await updateUserById(user._id, { $push: { messages: newMessage } });
 
     return response(`Message sent Successfully to ${username}`, 201);
   } catch (error) {

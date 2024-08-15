@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
-import { Message } from "@/model/User";
+import { Message } from "@/lib/mongoFunction";
 import ApiResponse from "@/types/ApiResponse";
 import axios, { AxiosError } from "axios";
 import { Loader2, RefreshCcw } from "lucide-react";
@@ -58,8 +58,8 @@ function UserDashboard() {
       setIsSwitchLoading(false);
       try {
         const response = await axios.get("/api/get-messages");
-        // console.log(`response of get-messages`, response);
-        setMessages(response.data.data || []);
+        console.log(`response of get-messages`, response);
+        setMessages(response.data.data[0].messages || []);
         if (refresh) {
           toast({
             title: "Refreshed Messages",
@@ -83,9 +83,9 @@ function UserDashboard() {
   );
 
   // Fetch initial state from the server
-  useEffect(() =>  {
+  useEffect(() => {
     if (!session || !session.user) return;
-    console.log(session)
+    console.log(session);
     fetchMessages();
 
     fetchAcceptMessages();
@@ -191,7 +191,7 @@ function UserDashboard() {
           <p>No messages to display.</p>
         )}
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 }

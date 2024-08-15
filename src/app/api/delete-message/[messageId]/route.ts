@@ -1,12 +1,11 @@
-import UserModel from "@/model/User";
-import dbConnect from "@/lib/dbConnect";
 import response from "@/utils/response";
-import mongoose from "mongoose";
 import { auth } from "@/auth";
+import { updateUserById } from "@/lib/mongoFunction";
+import { ObjectId } from "mongodb";
 
 export async function DELETE(request: Request) {
+  // console.log(`url of request`,request.url)
   const messageId = request.url.split("/")[5];
-  await dbConnect();
   const session = await auth();
   const _user = session?.user;
   //   console.log(_user)
@@ -16,11 +15,15 @@ export async function DELETE(request: Request) {
   // console.log(messageId);
 
   try {
-    const updateResult = await UserModel.updateOne(
-      { _id: _user._id },
-      { $pull: { messages: { _id: messageId } } }
-    );
+    // const updateResult = await UserModel.updateOne(
+    //   { _id: _user._id },
+    //   { $pull: { messages: { _id: messageId } } }
+    // );
     // console.log(updateResult);
+
+    const updateResult = await updateUserById(_user._id, {
+      $pull: { messages: { _id:new ObjectId(messageId)  } }, // Pulling message by its ObjectId
+    });
 
     if (updateResult.modifiedCount === 0) {
       return response("Message not found or already deleted", 404);

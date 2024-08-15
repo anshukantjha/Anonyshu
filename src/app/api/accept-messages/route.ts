@@ -1,13 +1,11 @@
 import { auth } from "@/auth";
-import dbConnect from "@/lib/dbConnect";
-import UserModel from "@/model/User";
+import { findUserById, updateUserById } from "@/lib/mongoFunction";
 import response from "@/utils/response";
 import { User } from "next-auth";
 
 // changes in db status of accepting message
 export async function POST(request: Request) {
   // Connect to the database
-  await dbConnect();
 
   const session = await auth();
   const user: User = session?.user;
@@ -20,19 +18,18 @@ export async function POST(request: Request) {
 
   try {
     // Update the user's message acceptance status
-    const updatedUser = await UserModel.findByIdAndUpdate(
-      userId,
-      { isAcceptingMessages: acceptMessages },
-      { new: true }
-    );
+    const updatedUser = await updateUserById(userId!, {
+      $set: { isAcceptingMessages: acceptMessages },
+    });
 
-    if (!updatedUser) {
+    if (!updatedUser!) {
       // User not found
       return response(
         "Unable to find user to update message acceptance status",
         404
       );
     }
+    console.log(updatedUser)
 
     // Successfully updated message acceptance status
     return response(
@@ -46,12 +43,9 @@ export async function POST(request: Request) {
   }
 }
 
-
-
 // gives the status whether user is accepting message or not via get method
 export async function GET(request: Request) {
   // Connect to the database
-  await dbConnect();
 
   // Get the user session
   const session = await auth();
@@ -59,22 +53,22 @@ export async function GET(request: Request) {
 
   // Check if the user is authenticated
   if (!session || !user) {
-    return response("Not Authenticated",401);
+    return response("Not Authenticated", 401);
   }
 
   try {
     // Retrieve the user from the database using the ID
-    const foundUser = await UserModel.findById(user._id);
+    const foundUser = await findUserById(user._id);
     // console.log(`foundUser in get request`,foundUser)
     if (!foundUser) {
       // User not found
-      return response("User not found",404);
+      return response("User not found", 404);
     }
 
     // Return the user's message acceptance status
-    return response("Ok",200,foundUser.isAcceptingMessages);
+    return response("Ok", 200, foundUser.isAcceptingMessages);
   } catch (error) {
     console.error("Error retrieving message acceptance status:", error);
-    return response("Error retrieving message acceptance status",500);
+    return response("Error retrieving message acceptance status", 500);
   }
 }

@@ -1,10 +1,8 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import UserModel from "./model/User";
-import dbConnect from "./lib/dbConnect";
 import { comparePassword } from "@/utils/password";
-import { toast } from "./components/ui/use-toast";
 import response from "./utils/response";
+import { findUserByEmail } from "./lib/mongoFunction";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   providers: [
@@ -18,11 +16,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       },
       authorize: async (credentials: any): Promise<any> => {
         console.log("Received credentials:", credentials);
-        await dbConnect();
         try {
-          const user = await UserModel.findOne({
-            email: credentials.email,
-          });
+          const user = await findUserByEmail(credentials.email)
           if (!user) {
             response("No user found with this email", 404);
             throw new Error("No user found with this email");

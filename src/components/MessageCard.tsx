@@ -1,11 +1,10 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react';
-import axios, { AxiosError } from 'axios';
-import dayjs from 'dayjs';
-import { X } from 'lucide-react';
-import { Message } from '@/model/User';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState } from "react";
+import axios, { AxiosError } from "axios";
+import dayjs from "dayjs";
+import { X } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,17 +15,21 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { Button } from './ui/button';
-import { useToast } from '@/components/ui/use-toast';
-import ApiResponse  from '@/types/ApiResponse';
+} from "@/components/ui/alert-dialog";
+import { Button } from "./ui/button";
+import { useToast } from "@/components/ui/use-toast";
+import ApiResponse from "@/types/ApiResponse";
+import { Message } from "@/lib/mongoFunction";
 
 type MessageCardProps = {
   message: Message;
   onMessageDelete: (messageId: string) => void;
 };
 
-export default function MessageCard({ message, onMessageDelete }: MessageCardProps) {
+export default function MessageCard({
+  message,
+  onMessageDelete,
+}: MessageCardProps) {
   const { toast } = useToast();
 
   const handleDeleteConfirm = async () => {
@@ -38,16 +41,15 @@ export default function MessageCard({ message, onMessageDelete }: MessageCardPro
         title: response.data.message,
       });
       onMessageDelete(message._id);
-
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
       toast({
-        title: 'Error',
+        title: "Error",
         description:
-          axiosError.response?.data.message ?? 'Failed to delete message',
-        variant: 'destructive',
+          axiosError.response?.data.message ?? "Failed to delete message",
+        variant: "destructive",
       });
-    } 
+    }
   };
 
   return (
@@ -57,7 +59,7 @@ export default function MessageCard({ message, onMessageDelete }: MessageCardPro
           <CardTitle>{message.content}</CardTitle>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant='destructive'>
+              <Button variant="destructive">
                 <X className="w-5 h-5" />
               </Button>
             </AlertDialogTrigger>
@@ -70,9 +72,7 @@ export default function MessageCard({ message, onMessageDelete }: MessageCardPro
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>
-                  Cancel
-                </AlertDialogCancel>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction onClick={handleDeleteConfirm}>
                   Continue
                 </AlertDialogAction>
@@ -81,7 +81,7 @@ export default function MessageCard({ message, onMessageDelete }: MessageCardPro
           </AlertDialog>
         </div>
         <div className="text-sm">
-          {dayjs(message.createdAt).format('MMM D, YYYY h:mm A')}
+          {dayjs(message.createdAt).format("MMM D, YYYY h:mm A")}
         </div>
       </CardHeader>
       <CardContent></CardContent>
